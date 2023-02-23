@@ -4,31 +4,34 @@ const router = express.Router();
 
 const { contacts: ctrl } = require("../../controllers");
 
-const { validation, ctrlWrapper } = require("../../middlewares");
+const { authenticate, validation, ctrlWrapper } = require("../../middlewares");
 const { schemas } = require("../../models/contact");
 
-router.get("/", ctrlWrapper(ctrl.getAll));
+router.get("/", authenticate, ctrlWrapper(ctrl.getAll));
 
-router.get("/:contactId", ctrlWrapper(ctrl.getById));
+router.get("/:contactId", authenticate, ctrlWrapper(ctrl.getById));
 
 router.post(
   "/",
+  authenticate,
   validation(schemas.contactAddJoiSchema),
   ctrlWrapper(ctrl.add)
 );
 
 router.put(
   "/:contactId",
+  authenticate,
   validation(schemas.contactUpdateJoiSchema),
   ctrlWrapper(ctrl.updateById)
 );
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   validation(schemas.updateFavoriteJoiSchema),
   ctrlWrapper(ctrl.updateStatusContact)
 );
 
-router.delete("/:contactId", ctrlWrapper(ctrl.removeById));
+router.delete("/:contactId", authenticate, ctrlWrapper(ctrl.removeById));
 
 module.exports = router;
