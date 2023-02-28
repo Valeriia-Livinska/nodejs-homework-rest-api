@@ -1,6 +1,7 @@
 const { User } = require("../../models/user");
 const { Conflict } = require("http-errors");
 const bcrypt = require("bcrypt");
+const gravatar = require("gravatar");
 
 const registration = async (req, res) => {
   const { email, password } = req.body;
@@ -17,12 +18,19 @@ const registration = async (req, res) => {
     throw new Error(err);
   });
 
-  const user = await User.create({ ...req.body, password: hashPassword });
+  const avatarURL = gravatar.url(email);
+
+  const user = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
 
   res.status(201).json({
     user: {
       email: user.email,
       subscription: user.subscription,
+      avatarURL,
     },
   });
 };
