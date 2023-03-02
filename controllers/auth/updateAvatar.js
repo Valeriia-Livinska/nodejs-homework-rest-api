@@ -3,17 +3,22 @@ const { User } = require("../../models/user");
 const fs = require("fs/promises");
 const path = require("path");
 const jimp = require("jimp");
-const { Unauthorized } = require("http-errors");
+const { Unauthorized, BadRequest } = require("http-errors");
 
 const newPath = path.join(__dirname, "../../", "public", "avatars");
 
 const updateAvatar = async (req, res) => {
+  if (!req.file) {
+    throw new BadRequest("No file was added");
+  }
+
   const { path: oldPath, originalname } = req.file;
   const { _id: userId } = req.user;
 
   try {
-    const [extension] = originalname.split(".").reverse();
-    const newAvatarName = `${userId}.${extension}`;
+    // -- if you need an extension
+    // const [extension] = originalname.split(".").reverse();
+    const newAvatarName = `${userId}_${originalname}`;
 
     const newAvatarPath = path.join(newPath, newAvatarName);
     await fs.rename(oldPath, newAvatarPath);
