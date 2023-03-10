@@ -21,6 +21,8 @@ router.post(
   ctrlWrapper(ctrl.registration)
 );
 
+router.get("/users/verify/:verificationToken", ctrlWrapper(ctrl.verify));
+
 router.post("/users/login", validation(userJoiSchema), ctrlWrapper(ctrl.login));
 
 router.post("/users/logout", authenticate, ctrlWrapper(ctrl.logout));
