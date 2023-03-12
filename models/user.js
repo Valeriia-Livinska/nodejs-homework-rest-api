@@ -31,6 +31,14 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -45,6 +53,11 @@ const updateSubscriptionJoiSchema = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business").required(),
 });
 
+// validation only for email
+const emailVerifyJoiSchema = Joi.object({
+  email: Joi.string().pattern(emailRegex).required(),
+});
+
 userSchema.post("save", handleMongooseError);
 
 const User = model("user", userSchema);
@@ -53,4 +66,5 @@ module.exports = {
   User,
   userJoiSchema,
   updateSubscriptionJoiSchema,
+  emailVerifyJoiSchema,
 };

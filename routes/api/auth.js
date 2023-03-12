@@ -11,6 +11,7 @@ const {
 const {
   userJoiSchema,
   updateSubscriptionJoiSchema,
+  emailVerifyJoiSchema,
 } = require("../../models/user");
 
 const router = express.Router();
@@ -19,6 +20,14 @@ router.post(
   "/users/signup",
   validation(userJoiSchema),
   ctrlWrapper(ctrl.registration)
+);
+
+router.get("/users/verify/:verificationToken", ctrlWrapper(ctrl.verify));
+
+router.post(
+  "/users/verify",
+  validation(emailVerifyJoiSchema),
+  ctrlWrapper(ctrl.resendVerifyEmail)
 );
 
 router.post("/users/login", validation(userJoiSchema), ctrlWrapper(ctrl.login));
